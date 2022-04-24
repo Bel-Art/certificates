@@ -3,7 +3,7 @@
 
 ## Installation
 
-```
+```sh
 python3 -m pip install pyopenssl
 ```
 
@@ -11,3 +11,11 @@ python3 -m pip install pyopenssl
 
 - create `list.json` file
 - run `python3 main.py`
+
+
+## Lint
+
+```sh
+python3 -m pip install pylint
+pylint main.py
+```

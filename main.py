@@ -1,28 +1,31 @@
+"""
+Python script to check certificates validity of websites
+"""
+import sys
 from datetime import datetime, timedelta
 from ssl import SSLContext, DER_cert_to_PEM_cert, PROTOCOL_SSLv23
 from socket import create_connection
-from json import load
-from sys import exit
+from json import load, JSONDecodeError
 from OpenSSL.crypto import load_certificate, FILETYPE_PEM  # pyopenssl
 
-filename = "list.json"
+FILENAME = "list.json"
 try:
-    with open(filename) as file:
+    with open(FILENAME, encoding="utf-8") as file:
         website_list = load(file)
 except FileNotFoundError:
-    print(f"Error: {filename}  not found")
-    exit(1)
-except Exception as e:
-    print(f"Error: {filename} not valid")
-    exit(1)
-port = 443
+    print(f"Error: {FILENAME}  not found")
+    sys.exit(1)
+except JSONDecodeError as e:
+    print(f"Error: {FILENAME} not valid")
+    sys.exit(1)
+PORT = 443
 
 for site in website_list:
-    conn = create_connection((site, port))
+    conn = create_connection((site, PORT))
     context = SSLContext(PROTOCOL_SSLv23)
     sock = context.wrap_socket(conn, server_hostname=site)
-    cert = DER_cert_to_PEM_cert(sock.getpeercert(True))
-    x509 = load_certificate(FILETYPE_PEM, cert)
+    CERT = DER_cert_to_PEM_cert(sock.getpeercert(True))
+    x509 = load_certificate(FILETYPE_PEM, CERT)
     end = x509.get_notAfter()
     start = x509.get_notBefore()
     cert_start = datetime.strptime(start.decode('utf-8'), '%Y%m%d%H%M%SZ')
