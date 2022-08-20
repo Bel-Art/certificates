@@ -1,5 +1,6 @@
 # certificates
 
+- See also `https://api.certspotter.com/v1/issuances?domain=DOMAIN&include_subdomains=true`
 
 ## Installation
 
